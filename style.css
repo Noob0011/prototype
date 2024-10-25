@@ -1,61 +1,83 @@
-const peer = new Peer();
-let myStream;
-const myVideo = document.getElementById('my-video');
-const peerIdElement = document.getElementById('peer-id');
-const copyIdButton = document.getElementById('copy-id');
-const createRoomButton = document.getElementById('create-room');
-const joinRoomButton = document.getElementById('join-room');
-const peersContainer = document.getElementById('peers-container');
-
-let connections = {};
-let isAdmin = false;
-
-// Display Peer ID when available
-peer.on('open', (id) => {
-    peerIdElement.textContent = id;
-});
-
-// Copy Peer ID to clipboard
-copyIdButton.onclick = () => {
-    navigator.clipboard.writeText(peerIdElement.textContent)
-        .then(() => alert('Peer ID copied!'));
-};
-
-// Start Video Stream
-createRoomButton.onclick = async () => {
-    isAdmin = true;
-    myStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    myVideo.srcObject = myStream;
-    myVideo.style.border = "2px solid #0b5ed7";  // Admin styling
-};
-
-// Join a Room as Guest
-joinRoomButton.onclick = async () => {
-    const roomId = document.getElementById('room-id-input').value.trim();
-    if (!roomId) {
-        alert('Please enter a valid Room ID to join');
-        return;
-    }
-    myStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    myVideo.srcObject = myStream;
-
-    const call = peer.call(roomId, myStream);
-    call.on('stream', (stream) => addVideoStream(stream, call.peer));
-};
-
-// Add Video Stream to DOM and Avoid Duplicate Entries
-function addVideoStream(stream, peerId) {
-    if (connections[peerId]) return; // Prevent duplicate video
-    const video = document.createElement('video');
-    video.srcObject = stream;
-    video.autoplay = true;
-    video.dataset.peerId = peerId;
-    peersContainer.appendChild(video);
-    connections[peerId] = stream;
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-// Answer Incoming Calls
-peer.on('call', (call) => {
-    call.answer(myStream);
-    call.on('stream', (remoteStream) => addVideoStream(remoteStream, call.peer));
-});
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+#app {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    padding: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#app.dark-mode {
+    background-color: #1e1e1e;
+}
+
+h1 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+}
+
+button, input {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 4px;
+    margin: 5px;
+}
+
+button#dark-mode-toggle {
+    margin-bottom: 20px;
+}
+
+#video-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+video {
+    width: 100%;
+    max-width: 250px;
+    background-color: #000;
+    border-radius: 8px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+#controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (max-width: 600px) {
+    #app {
+        padding: 5px;
+    }
+
+    #controls, #video-container {
+        flex-direction: column;
+    }
+}
