@@ -1,89 +1,120 @@
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f9f9f9;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    transition: background-color 0.3s ease, color 0.3s ease;
+const peer = new Peer();
+let myStream;
+const myVideo = document.getElementById('my-video');
+const peerIdElement = document.getElementById('peer-id');
+const copyIdButton = document.getElementById('copy-id');
+const createRoomButton = document.getElementById('create-room');
+const joinRoomButton = document.getElementById('join-room');
+const darkModeToggle = document.getElementById('dark-mode-toggle');
+const peersContainer = document.getElementById('peers-container');
+const adminControls = document.getElementById('admin-controls');
+const participantList = document.getElementById('participant-list');
+
+let connections = {};
+let isAdmin = false;
+
+// Toggle Dark Mode
+darkModeToggle.onclick = () => {
+    document.body.classList.toggle('dark-mode');
+    document.getElementById('app').classList.toggle('dark-mode');
+};
+
+// Display Peer ID when available
+peer.on('open', (id) => {
+    peerIdElement.textContent = id;
+    console.log('Your Peer ID:', id);
+});
+
+// Copy Peer ID to clipboard
+copyIdButton.onclick = () => {
+    navigator.clipboard.writeText(peerIdElement.textContent)
+        .then(() => alert('Peer ID copied!'));
+};
+
+// Start Video Stream for Room Creation
+createRoomButton.onclick = async () => {
+    isAdmin = true;
+    adminControls.style.display = 'block';
+    try {
+        myStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        myVideo.srcObject = myStream;
+    } catch (error) {
+        console.error('Error accessing media devices:', error);
+        alert('Could not start video. Please check camera and microphone permissions.');
+    }
+};
+
+// Join a Room as Guest
+joinRoomButton.onclick = async () => {
+    const roomId = document.getElementById('room-id-input').value.trim();
+    if (!roomId) {
+        alert('Please enter a valid Room ID to join');
+        return;
+    }
+    try {
+        myStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        myVideo.srcObject = myStream;
+
+        const call = peer.call(roomId, myStream);
+        call.on('stream', (stream) => addVideoStream(stream, call.peer));
+    } catch (error) {
+        console.error('Error joining room:', error);
+    }
+};
+
+// Add Video Stream to DOM and Avoid Duplicate Entries
+function addVideoStream(stream, peerId) {
+    if (connections[peerId]) return;
+    const video = document.createElement('video');
+    video.srcObject = stream;
+    video.autoplay = true;
+    video.dataset.peerId = peerId;
+    peersContainer.appendChild(video);
+    connections[peerId] = stream;
+
+    if (isAdmin) addParticipantToAdminList(peerId);
 }
 
-body.dark-mode {
-    background-color: #121212;
-    color: #e0e0e0;
+// Answer Incoming Calls
+peer.on('call', (call) => {
+    call.answer(myStream);
+    call.on('stream', (remoteStream) => addVideoStream(remoteStream, call.peer));
+});
+
+// Add Participant to Admin Controls List
+function addParticipantToAdminList(peerId) {
+    const li = document.createElement('li');
+    li.textContent = `Participant: ${peerId}`;
+
+    // Add Mute/Unmute and Kick buttons
+    const muteButton = document.createElement('button');
+    muteButton.textContent = 'Mute';
+    muteButton.onclick = () => toggleMute(peerId, muteButton);
+
+    const kickButton = document.createElement('button');
+    kickButton.textContent = 'Kick';
+    kickButton.onclick = () => kickParticipant(peerId, li);
+
+    li.appendChild(muteButton);
+    li.appendChild(kickButton);
+    participantList.appendChild(li);
 }
 
-#app {
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+// Mute or Unmute a Participant
+function toggleMute(peerId, button) {
+    const videoElement = document.querySelector(`video[data-peer-id="${peerId}"]`);
+    if (videoElement) {
+        videoElement.muted = !videoElement.muted;
+        button.textContent = videoElement.muted ? 'Unmute' : 'Mute';
+    }
 }
 
-h1 {
-    font-size: 1.6rem;
-    margin-bottom: 20px;
-}
-
-button, input {
-    padding: 10px;
-    font-size: 1rem;
-    border-radius: 4px;
-    margin: 5px;
-}
-
-#dark-mode-toggle {
-    margin-bottom: 20px;
-}
-
-#video-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-}
-
-video {
-    width: 100%;
-    max-width: 250px;
-    background-color: #000;
-    border-radius: 8px;
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-#controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-}
-
-#admin-controls {
-    margin-top: 20px;
-    display: none; /* Only shown to admin */
-}
-
-#participant-list {
-    list-style-type: none;
-    padding: 0;
-    text-align: left;
-}
-
-#participant-list li {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 5px;
-    display: flex;
-    justify-content: space-between;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+// Kick a Participant
+function kickParticipant(peerId, listItem) {
+    const videoElement = document.querySelector(`video[data-peer-id="${peerId}"]`);
+    if (videoElement) {
+        videoElement.remove();
+        listItem.remove();
+        delete connections[peerId];
+    }
 }
