@@ -7,22 +7,31 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Anonymous Video Calling</h1>
-    <div id="video-container">
-        <video id="my-video" autoplay muted></video>
-        <video id="peer-video" autoplay></video>
-    </div>
-    <div id="controls">
-        <button id="start-call">Start Call</button>
-        <button id="mute-audio">Mute Audio</button>
-        <button id="mute-video">Mute Video</button>
-        <input type="text" id="peer-id-input" placeholder="Enter Peer ID to connect" />
-        <button id="connect">Connect</button>
-        <button id="end-call">End Call</button>
-    </div>
-    <div id="chat-container">
-        <textarea id="chat" placeholder="Type your message here..."></textarea>
-        <button id="send-message">Send</button>
+    <div id="app">
+        <h1>Anonymous Video Calling</h1>
+        <button id="theme-toggle">Toggle Dark Mode</button>
+        <div id="peer-info">
+            <p>Your Peer ID: <span id="peer-id">Generating...</span> <button id="copy-id">Copy ID</button></p>
+        </div>
+        
+        <div id="video-container">
+            <video id="my-video" autoplay muted></video>
+            <div id="peers-container"></div>
+        </div>
+        
+        <div id="controls">
+            <button id="start-call">Start Call</button>
+            <button id="mute-audio">Mute Audio</button>
+            <button id="mute-video">Mute Video</button>
+            <input type="text" id="room-id-input" placeholder="Enter Room ID or Peer ID" />
+            <button id="connect">Connect</button>
+            <button id="end-call">End Call</button>
+        </div>
+        
+        <div id="chat-container">
+            <textarea id="chat" placeholder="Type your message here..."></textarea>
+            <button id="send-message">Send</button>
+        </div>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peerjs.min.js"></script>
