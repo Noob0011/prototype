@@ -8,10 +8,11 @@
 </head>
 <body>
     <div id="app">
-        <h1>Anonymous Video Calling</h1>
-        <button id="theme-toggle">Toggle Dark Mode</button>
+        <h1>Anonymous Video Call Room</h1>
+        <button id="theme-toggle">🌙 Dark Mode</button>
         <div id="peer-info">
-            <p>Your Peer ID: <span id="peer-id">Generating...</span> <button id="copy-id">Copy ID</button></p>
+            <p>Your Room ID: <span id="peer-id">Generating...</span> <button id="copy-id">Copy</button></p>
+            <p><small>Share this ID for others to join your room</small></p>
         </div>
         
         <div id="video-container">
@@ -20,20 +21,25 @@
         </div>
         
         <div id="controls">
-            <button id="start-call">Start Call</button>
-            <button id="mute-audio">Mute Audio</button>
-            <button id="mute-video">Mute Video</button>
-            <input type="text" id="room-id-input" placeholder="Enter Room ID or Peer ID" />
-            <button id="connect">Connect</button>
-            <button id="end-call">End Call</button>
+            <button id="start-call">📹 Start Call</button>
+            <button id="mute-audio">🔇 Mute Audio</button>
+            <button id="mute-video">📵 Mute Video</button>
+            <input type="text" id="room-id-input" placeholder="Enter Room ID" />
+            <button id="connect">🔗 Connect</button>
+            <button id="end-call">❌ End Call</button>
         </div>
-        
+
         <div id="chat-container">
-            <textarea id="chat" placeholder="Type your message here..."></textarea>
+            <textarea id="chat" placeholder="Message"></textarea>
             <button id="send-message">Send</button>
         </div>
+        
+        <div id="participant-list">
+            <h3>Participants</h3>
+            <ul id="participants"></ul>
+        </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peerjs.min.js"></script>
     <script src="script.js"></script>
 </body>
