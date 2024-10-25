@@ -21,12 +21,8 @@ body.dark-mode {
     max-width: 500px;
     text-align: center;
     padding: 10px;
+    border-radius: 8px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-#app.dark-mode {
-    background-color: #1e1e1e;
 }
 
 h1 {
@@ -41,7 +37,7 @@ button, input {
     margin: 5px;
 }
 
-button#dark-mode-toggle {
+#dark-mode-toggle {
     margin-bottom: 20px;
 }
 
@@ -67,17 +63,27 @@ video {
     margin-top: 20px;
 }
 
+#admin-controls {
+    margin-top: 20px;
+    display: none; /* Only shown to admin */
+}
+
+#participant-list {
+    list-style-type: none;
+    padding: 0;
+    text-align: left;
+}
+
+#participant-list li {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
-}
-
-@media (max-width: 600px) {
-    #app {
-        padding: 5px;
-    }
-
-    #controls, #video-container {
-        flex-direction: column;
-    }
 }
