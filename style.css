@@ -1,39 +1,68 @@
 body {
+    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-color: #f9f9f9;
     color: #333;
     margin: 0;
+    padding: 0;
     height: 100vh;
 }
 
 #app {
-    width: 90%;
+    width: 100%;
     max-width: 500px;
     text-align: center;
+    padding: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
 }
 
-button {
+button, input {
     padding: 10px;
-    margin: 10px 5px;
     font-size: 1rem;
+    border-radius: 4px;
+    margin: 5px;
 }
 
 #video-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     margin-top: 20px;
 }
 
 video {
     width: 100%;
-    max-width: 300px;
+    max-width: 250px;
     background-color: #000;
-    border-radius: 5px;
+    border-radius: 8px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+#controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (max-width: 600px) {
+    #app {
+        padding: 5px;
+    }
+
+    #controls, #video-container {
+        flex-direction: column;
+    }
 }
