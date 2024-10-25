@@ -9,8 +9,8 @@
 <body>
     <div id="app">
         <h1>Video Call Room</h1>
-        
-        <!-- Display Peer ID and Room Controls -->
+
+        <!-- Peer ID Display and Room Controls -->
         <div id="peer-info">
             <p>Your Room ID: <span id="peer-id">Loading...</span> <button id="copy-id">Copy</button></p>
             <button id="create-room">Create Room</button>
@@ -19,13 +19,19 @@
         <!-- Dark Mode Toggle -->
         <button id="dark-mode-toggle">Toggle Dark Mode</button>
 
-        <!-- Main Video Container for Self and Others -->
+        <!-- Video Container and Participant List -->
         <div id="video-container">
             <video id="my-video" autoplay muted></video>
             <div id="peers-container"></div>
         </div>
 
-        <!-- Room Controls for Host/Admin -->
+        <!-- Admin Controls and Participant List -->
+        <div id="admin-controls" style="display:none;">
+            <h2>Admin Controls</h2>
+            <ul id="participant-list"></ul>
+        </div>
+
+        <!-- Room Controls for Joining and Leaving -->
         <div id="controls">
             <input type="text" id="room-id-input" placeholder="Enter Room ID" />
             <button id="join-room">Join Room</button>
