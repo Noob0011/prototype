@@ -1,36 +1,69 @@
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f0f0f0;
-}
-
-#video-container {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin: 20px;
+    align-items: center;
+    background-color: var(--bg-color, #ffffff);
+    color: var(--text-color, #000000);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#app {
+    width: 80%;
+    max-width: 800px;
+    text-align: center;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+button, input, textarea {
+    margin: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+}
+
+button {
+    transition: background-color 0.3s, transform 0.2s;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+#theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 8px;
+    cursor: pointer;
+}
+
+#video-container, #peers-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
 }
 
 video {
     width: 300px;
     height: 200px;
+    border-radius: 8px;
     background-color: #333;
 }
 
-#controls {
-    margin: 10px;
+/* Dark mode colors */
+body.dark-mode {
+    --bg-color: #121212;
+    --text-color: #ffffff;
 }
 
-button, input {
-    margin: 10px;
-    padding: 10px;
-}
-
-#chat-container {
+#chat-container, #controls {
     margin: 20px;
-}
-
-textarea {
-    width: 300px;
-    height: 100px;
 }
