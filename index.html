@@ -3,50 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anonymous Video Call</title>
+    <title>Video Call Room</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
-        <!-- Theme Toggle with Fixed Position for Mobile -->
-        <button id="theme-toggle">🌙 Dark Mode</button>
+        <h1>Video Call Room</h1>
         
-        <!-- Notifications Panel -->
-        <div id="notifications"></div>
-
-        <h1>Anonymous Video Call Room</h1>
-
-        <!-- Peer ID Info with Copy Button -->
+        <!-- Display Peer ID -->
         <div id="peer-info">
-            <p>Your Room ID: <span id="peer-id">Generating...</span> <button id="copy-id">Copy</button></p>
-            <p><small>Share this ID for others to join your room</small></p>
+            <p>Your Room ID: <span id="peer-id">Loading...</span> <button id="copy-id">Copy</button></p>
         </div>
 
-        <!-- Video Containers for Self and Participants -->
+        <!-- Main Video and Controls -->
         <div id="video-container">
             <video id="my-video" autoplay muted></video>
             <div id="peers-container"></div>
         </div>
 
-        <!-- Call Controls Section -->
+        <!-- Call Controls -->
         <div id="controls">
-            <button id="start-call">📹 Start Call</button>
-            <button id="mute-audio">🔇 Mute Audio</button>
-            <button id="mute-video">📵 Mute Video</button>
-            <input type="text" id="room-id-input" placeholder="Enter Room ID" />
-            <button id="connect">🔗 Connect</button>
-            <button id="end-call">❌ End Call</button>
-        </div>
-
-        <!-- Chat and Participant List -->
-        <div id="chat-container">
-            <textarea id="chat" placeholder="Message"></textarea>
-            <button id="send-message">Send</button>
-        </div>
-        
-        <div id="participant-list">
-            <h3>Participants</h3>
-            <ul id="participants"></ul>
+            <button id="start-call">Start Call</button>
+            <input type="text" id="room-id-input" placeholder="Room ID" />
+            <button id="connect">Connect</button>
+            <button id="end-call">End Call</button>
         </div>
     </div>
 
