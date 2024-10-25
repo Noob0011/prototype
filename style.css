@@ -1,123 +1,39 @@
-:root {
-    --bg-color: #ffffff;
-    --text-color: #000000;
-    --accent-color: #0056b3;
-    --dark-bg: #121212;
-    --light-bg: #ffffff;
-}
-
 body {
-    font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    transition: background-color 0.3s, color 0.3s;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    color: #333;
     margin: 0;
+    height: 100vh;
 }
 
 #app {
     width: 90%;
-    max-width: 600px;
+    max-width: 500px;
     text-align: center;
-    padding: 20px;
-    animation: fadeIn 1s ease-in;
 }
 
 h1 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
+    font-size: 1.5rem;
 }
 
-button, input, textarea {
-    margin: 10px;
-    padding: 12px;
+button {
+    padding: 10px;
+    margin: 10px 5px;
     font-size: 1rem;
-    border-radius: 5px;
-    transition: background-color 0.3s, transform 0.2s;
-    cursor: pointer;
 }
 
-button:hover {
-    background-color: var(--accent-color);
-    transform: scale(1.05);
-}
-
-#theme-toggle {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    padding: 8px;
-}
-
-#video-container, #peers-container {
+#video-container {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    margin-top: 20px;
 }
 
 video {
     width: 100%;
-    max-width: 280px;
-    border-radius: 8px;
-    background-color: #333;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-    animation: fadeIn 0.8s ease-out;
-}
-
-/* Dark Mode Colors */
-body.dark-mode {
-    --bg-color: #121212;
-    --text-color: #ffffff;
-}
-
-/* Notifications Animation */
-#notifications {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 100%;
-    max-width: 600px;
-    text-align: center;
-    margin: 20px;
-    z-index: 1000;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-#chat-container, #participant-list, #controls {
-    margin: 20px 0;
-}
-
-#participants li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-}
-
-textarea {
-    width: 100%;
     max-width: 300px;
-    resize: vertical;
-}
-
-/* Mobile Optimization */
-@media (max-width: 600px) {
-    #controls {
-        flex-direction: column;
-        gap: 5px;
-    }
-    #theme-toggle {
-        position: fixed;
-        top: 15px;
-        right: 15px;
-    }
+    background-color: #000;
+    border-radius: 5px;
 }
