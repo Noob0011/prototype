@@ -17,7 +17,20 @@ video {
     background-color: #333;
 }
 
+#controls {
+    margin: 10px;
+}
+
 button, input {
     margin: 10px;
     padding: 10px;
+}
+
+#chat-container {
+    margin: 20px;
+}
+
+textarea {
+    width: 300px;
+    height: 100px;
 }
