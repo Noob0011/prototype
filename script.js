@@ -1,11 +1,13 @@
 const peer = new Peer();
 const myVideo = document.getElementById('my-video');
 const peersContainer = document.getElementById('peers-container');
+const participantsList = document.getElementById('participants');
 const peerIdElement = document.getElementById('peer-id');
 const copyIdButton = document.getElementById('copy-id');
 const themeToggle = document.getElementById('theme-toggle');
 let myStream;
 let connections = {};
+let isAdmin = true;  // Set as `true` for the room creator
 
 // Toggle Dark Mode
 themeToggle.onclick = () => {
@@ -48,6 +50,7 @@ document.getElementById('connect').onclick = () => {
         call.on('stream', (stream) => {
             addVideoStream(stream, call.peer);
         });
+        addParticipant(roomId, isAdmin ? 'Admin' : 'User');
     }
 };
 
@@ -57,6 +60,7 @@ peer.on('call', (call) => {
     call.on('stream', (stream) => {
         addVideoStream(stream, call.peer);
     });
+    addParticipant(call.peer, 'User');
 });
 
 // Add Video Stream for Peers
@@ -71,14 +75,44 @@ function addVideoStream(stream, peerId) {
     }
 }
 
-// End Call
-document.getElementById('end-call').onclick = () => {
-    peer.disconnect();
-    myVideo.srcObject = null;
-    Object.values(connections).forEach(video => {
-        video.remove();
-    });
-    connections = {};
+// Chat
+const chatArea = document.getElementById('chat');
+document.getElementById('send-message').onclick = () => {
+    const message = chatArea.value;
+    if (message) {
+        Object.keys(connections).forEach(peerId => {
+            // Send message to each peer (implementation depends on protocol)
+            console.log(`Message sent to ${peerId}: ${message}`);
+        });
+        chatArea.value = "";  // Clear the chat area
+    }
 };
 
-// Chat functionality can be integrated similarly, expanding based on peers.
+// Admin Controls (e.g., Mute/Remove Users)
+function addParticipant(peerId, role) {
+    const listItem = document.createElement('li');
+    listItem.textContent = `${role} - ${peerId}`;
+    if (isAdmin && role === 'User') {
+        const muteButton = document.createElement('button');
+        muteButton.textContent = "Mute";
+        muteButton.onclick = () => toggleUserAudio(peerId, false);
+        const removeButton = document.createElement('button');
+        removeButton.textContent = "Remove";
+        removeButton.onclick = () => removeUser(peerId);
+        listItem.append(muteButton, removeButton);
+    }
+    participantsList.append(listItem);
+}
+
+function toggleUserAudio(peerId, mute) {
+    // Logic to mute the audio of peer with `peerId`
+    console.log(`Toggling audio for ${peerId} - mute: ${mute}`);
+}
+
+function removeUser(peerId) {
+    // Logic to remove the peer from call
+    if (connections[peerId]) {
+        connections[peerId].remove();
+        delete connections[peerId];
+    }
+}
