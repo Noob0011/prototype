@@ -1,54 +1,61 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --accent-color: #0056b3;
+    --dark-bg: #121212;
+    --light-bg: #ffffff;
+}
+
 body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--bg-color, #ffffff);
-    color: var(--text-color, #000000);
-    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     transition: background-color 0.3s, color 0.3s;
+    margin: 0;
 }
 
 #app {
-    width: 95%;
+    width: 90%;
     max-width: 600px;
     text-align: center;
-    margin: 0 auto;
-    padding: 10px;
+    padding: 20px;
+    animation: fadeIn 1s ease-in;
 }
 
 h1 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
 }
 
 button, input, textarea {
-    margin: 8px;
-    padding: 10px;
-    font-size: 0.9rem;
+    margin: 10px;
+    padding: 12px;
+    font-size: 1rem;
     border-radius: 5px;
-}
-
-button {
     transition: background-color 0.3s, transform 0.2s;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: var(--accent-color);
     transform: scale(1.05);
 }
 
 #theme-toggle {
     position: fixed;
-    top: 10px;
-    right: 10px;
-    padding: 6px;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    padding: 8px;
 }
 
 #video-container, #peers-container {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 10px;
     flex-wrap: wrap;
 }
 
@@ -57,20 +64,60 @@ video {
     max-width: 280px;
     border-radius: 8px;
     background-color: #333;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.8s ease-out;
 }
 
-#participant-list, #chat-container, #controls {
-    margin: 10px 0;
+/* Dark Mode Colors */
+body.dark-mode {
+    --bg-color: #121212;
+    --text-color: #ffffff;
+}
+
+/* Notifications Animation */
+#notifications {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    margin: 20px;
+    z-index: 1000;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+#chat-container, #participant-list, #controls {
+    margin: 20px 0;
+}
+
+#participants li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
 }
 
 textarea {
     width: 100%;
     max-width: 300px;
+    resize: vertical;
 }
 
+/* Mobile Optimization */
 @media (max-width: 600px) {
     #controls {
         flex-direction: column;
         gap: 5px;
+    }
+    #theme-toggle {
+        position: fixed;
+        top: 15px;
+        right: 15px;
     }
 }
