@@ -8,18 +8,27 @@
 </head>
 <body>
     <div id="app">
-        <h1>Anonymous Video Call Room</h1>
+        <!-- Theme Toggle with Fixed Position for Mobile -->
         <button id="theme-toggle">🌙 Dark Mode</button>
+        
+        <!-- Notifications Panel -->
+        <div id="notifications"></div>
+
+        <h1>Anonymous Video Call Room</h1>
+
+        <!-- Peer ID Info with Copy Button -->
         <div id="peer-info">
             <p>Your Room ID: <span id="peer-id">Generating...</span> <button id="copy-id">Copy</button></p>
             <p><small>Share this ID for others to join your room</small></p>
         </div>
-        
+
+        <!-- Video Containers for Self and Participants -->
         <div id="video-container">
             <video id="my-video" autoplay muted></video>
             <div id="peers-container"></div>
         </div>
-        
+
+        <!-- Call Controls Section -->
         <div id="controls">
             <button id="start-call">📹 Start Call</button>
             <button id="mute-audio">🔇 Mute Audio</button>
@@ -29,6 +38,7 @@
             <button id="end-call">❌ End Call</button>
         </div>
 
+        <!-- Chat and Participant List -->
         <div id="chat-container">
             <textarea id="chat" placeholder="Message"></textarea>
             <button id="send-message">Send</button>
