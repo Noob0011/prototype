@@ -1,80 +1,84 @@
 const peer = new Peer();
-
 const myVideo = document.getElementById('my-video');
-const peerVideo = document.getElementById('peer-video');
-const startCallButton = document.getElementById('start-call');
-const connectButton = document.getElementById('connect');
-const endCallButton = document.getElementById('end-call');
-const muteAudioButton = document.getElementById('mute-audio');
-const muteVideoButton = document.getElementById('mute-video');
-const peerIdInput = document.getElementById('peer-id-input');
-const chatArea = document.getElementById('chat');
-const sendMessageButton = document.getElementById('send-message');
-
-// Start video stream
+const peersContainer = document.getElementById('peers-container');
+const peerIdElement = document.getElementById('peer-id');
+const copyIdButton = document.getElementById('copy-id');
+const themeToggle = document.getElementById('theme-toggle');
 let myStream;
-startCallButton.onclick = async () => {
+let connections = {};
+
+// Toggle Dark Mode
+themeToggle.onclick = () => {
+    document.body.classList.toggle('dark-mode');
+};
+
+// Copy Peer ID
+copyIdButton.onclick = () => {
+    navigator.clipboard.writeText(peerIdElement.textContent).then(() => {
+        alert('Peer ID copied to clipboard');
+    });
+};
+
+// Display Peer ID and Initialize
+peer.on('open', (id) => {
+    peerIdElement.textContent = id;
+});
+
+// Start Video Stream
+document.getElementById('start-call').onclick = async () => {
     myStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     myVideo.srcObject = myStream;
 };
 
-// Handle incoming connections
-peer.on('open', (id) => {
-    alert("Your Peer ID is: " + id); // Display your Peer ID for others to connect
-});
+// Mute/Unmute Audio and Video
+document.getElementById('mute-audio').onclick = () => toggleTrack('audio');
+document.getElementById('mute-video').onclick = () => toggleTrack('video');
 
+function toggleTrack(type) {
+    myStream.getTracks().forEach(track => {
+        if (track.kind === type) track.enabled = !track.enabled;
+    });
+}
+
+// Connect to Room or Peer
+document.getElementById('connect').onclick = () => {
+    const roomId = document.getElementById('room-id-input').value;
+    if (roomId) {
+        const call = peer.call(roomId, myStream);
+        call.on('stream', (stream) => {
+            addVideoStream(stream, call.peer);
+        });
+    }
+};
+
+// Handle Incoming Calls
 peer.on('call', (call) => {
-    call.answer(myStream); // Answer the call and send your video stream
+    call.answer(myStream);
     call.on('stream', (stream) => {
-        peerVideo.srcObject = stream; // Display the peer's video stream
+        addVideoStream(stream, call.peer);
     });
 });
 
-// Connect to another peer
-connectButton.onclick = () => {
-    const peerId = peerIdInput.value;
-    if (peerId && myStream) {
-        const call = peer.call(peerId, myStream);
-        call.on('stream', (stream) => {
-            peerVideo.srcObject = stream;
-        });
-    } else {
-        alert("Please start your video and enter a Peer ID.");
+// Add Video Stream for Peers
+function addVideoStream(stream, peerId) {
+    if (!connections[peerId]) {
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        video.autoplay = true;
+        video.setAttribute('data-peer', peerId);
+        peersContainer.append(video);
+        connections[peerId] = video;
     }
-};
+}
 
-// Mute/Unmute audio
-let isAudioMuted = false;
-muteAudioButton.onclick = () => {
-    isAudioMuted = !isAudioMuted;
-    myStream.getAudioTracks()[0].enabled = !isAudioMuted;
-    muteAudioButton.textContent = isAudioMuted ? "Unmute Audio" : "Mute Audio";
-};
-
-// Mute/Unmute video
-let isVideoMuted = false;
-muteVideoButton.onclick = () => {
-    isVideoMuted = !isVideoMuted;
-    myStream.getVideoTracks()[0].enabled = !isVideoMuted;
-    muteVideoButton.textContent = isVideoMuted ? "Unmute Video" : "Mute Video";
-};
-
-// End call
-endCallButton.onclick = () => {
+// End Call
+document.getElementById('end-call').onclick = () => {
     peer.disconnect();
     myVideo.srcObject = null;
-    peerVideo.srcObject = null;
-    alert("Call ended.");
+    Object.values(connections).forEach(video => {
+        video.remove();
+    });
+    connections = {};
 };
 
-// Handle text chat
-sendMessageButton.onclick = () => {
-    const message = chatArea.value;
-    if (message) {
-        // For simplicity, we will log the message. You can extend this to send messages over WebRTC.
-        console.log("Message sent:", message);
-        chatArea.value = ""; // Clear the chat area
-    } else {
-        alert("Please type a message.");
-    }
-};
+// Chat functionality can be integrated similarly, expanding based on peers.
