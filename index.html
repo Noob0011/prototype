@@ -10,22 +10,22 @@
     <div id="app">
         <h1>Video Call Room</h1>
         
-        <!-- Display Peer ID -->
+        <!-- Display Peer ID and Room Controls -->
         <div id="peer-info">
             <p>Your Room ID: <span id="peer-id">Loading...</span> <button id="copy-id">Copy</button></p>
+            <button id="create-room">Create Room</button>
         </div>
 
-        <!-- Main Video and Controls -->
+        <!-- Main Video Container for Self and Others -->
         <div id="video-container">
             <video id="my-video" autoplay muted></video>
             <div id="peers-container"></div>
         </div>
 
-        <!-- Call Controls -->
+        <!-- Room Controls for Host/Admin -->
         <div id="controls">
-            <button id="start-call">Start Call</button>
-            <input type="text" id="room-id-input" placeholder="Room ID" />
-            <button id="connect">Connect</button>
+            <input type="text" id="room-id-input" placeholder="Enter Room ID" />
+            <button id="join-room">Join Room</button>
             <button id="end-call">End Call</button>
         </div>
     </div>
