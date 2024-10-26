@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Call Room</title>
+    <title>Advanced Video Call Room</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -29,13 +29,13 @@
         <div id="admin-controls" style="display:none;">
             <h2>Admin Controls</h2>
             <ul id="participant-list"></ul>
+            <button id="end-call" class="admin-only">End Call</button>
         </div>
 
         <!-- Room Controls for Joining and Leaving -->
         <div id="controls">
             <input type="text" id="room-id-input" placeholder="Enter Room ID" />
             <button id="join-room">Join Room</button>
-            <button id="end-call">End Call</button>
         </div>
     </div>
 
