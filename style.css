@@ -1,131 +1,84 @@
-const peer = new Peer();
-let myStream;
-const myVideo = document.getElementById('my-video');
-const peerIdElement = document.getElementById('peer-id');
-const copyIdButton = document.getElementById('copy-id');
-const createRoomButton = document.getElementById('create-room');
-const joinRoomButton = document.getElementById('join-room');
-const endCallButton = document.getElementById('end-call');
-const darkModeToggle = document.getElementById('dark-mode-toggle');
-const peersContainer = document.getElementById('peers-container');
-const adminControls = document.getElementById('admin-controls');
-const participantList = document.getElementById('participant-list');
-
-let connections = {};
-let isAdmin = false;
-
-// Toggle Dark Mode
-darkModeToggle.onclick = () => {
-    document.body.classList.toggle('dark-mode');
-};
-
-// Display Peer ID when available
-peer.on('open', (id) => {
-    peerIdElement.textContent = id;
-    console.log('Your Peer ID:', id);
-});
-
-// Copy Peer ID to clipboard
-copyIdButton.onclick = () => {
-    navigator.clipboard.writeText(peerIdElement.textContent)
-        .then(() => alert('Peer ID copied!'));
-};
-
-// Initialize Media and Stream for Room
-async function initializeStream() {
-    try {
-        myStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        myVideo.srcObject = myStream;
-    } catch (error) {
-        console.error('Media error:', error);
-        alert('Check camera/microphone permissions');
-    }
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f9f9f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-// Start Video Stream as Room Admin
-createRoomButton.onclick = async () => {
-    isAdmin = true;
-    adminControls.style.display = 'block';
-    await initializeStream();
-};
-
-// Join a Room as Guest
-joinRoomButton.onclick = async () => {
-    const roomId = document.getElementById('room-id-input').value.trim();
-    if (!roomId) {
-        alert('Please enter a Room ID');
-        return;
-    }
-    await initializeStream();
-    const call = peer.call(roomId, myStream);
-    handleIncomingCall(call);
-};
-
-// Handle Incoming Calls and Streams
-peer.on('call', (call) => {
-    call.answer(myStream);
-    handleIncomingCall(call);
-});
-
-function handleIncomingCall(call) {
-    call.on('stream', (stream) => addParticipantStream(stream, call.peer));
-    call.on('close', () => removeParticipant(call.peer));
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
 }
 
-// Add Participant Stream to UI
-function addParticipantStream(stream, peerId) {
-    if (connections[peerId]) return;
-
-    const video = document.createElement('video');
-    video.srcObject = stream;
-    video.autoplay = true;
-    video.dataset.peerId = peerId;
-    peersContainer.appendChild(video);
-    connections[peerId] = { stream, video };
-
-    if (isAdmin) addAdminControls(peerId);
+#app {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-// Admin Controls for Mute, Kick, and Manage Participants
-function addAdminControls(peerId) {
-    const participantItem = document.createElement('li');
-    participantItem.textContent = `Participant: ${peerId}`;
-
-    const muteButton = document.createElement('button');
-    muteButton.textContent = 'Mute';
-    muteButton.onclick = () => toggleMute(peerId, muteButton);
-
-    const kickButton = document.createElement('button');
-    kickButton.textContent = 'Kick';
-    kickButton.onclick = () => kickParticipant(peerId, participantItem);
-
-    participantItem.appendChild(muteButton);
-    participantItem.appendChild(kickButton);
-    participantList.appendChild(participantItem);
+h1 {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
 }
 
-function toggleMute(peerId, button) {
-    const participant = connections[peerId];
-    if (participant && participant.stream) {
-        const audioTracks = participant.stream.getAudioTracks();
-        audioTracks.forEach(track => track.enabled = !track.enabled);
-        button.textContent = track.enabled ? 'Mute' : 'Unmute';
-    }
+button, input {
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 4px;
+    margin: 5px;
 }
 
-function kickParticipant(peerId, participantItem) {
-    if (connections[peerId]) {
-        connections[peerId].video.remove();
-        participantItem.remove();
-        delete connections[peerId];
-    }
+#dark-mode-toggle {
+    margin-bottom: 20px;
 }
 
-// End Call for All (Admin Only)
-endCallButton.onclick = () => {
-    if (isAdmin) {
-        Object.values(connections).forEach(connection => connection.video.remove());
-        connections = {};
-        alert('Call ended');
-    }
-};
+#video-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+video {
+    width: 100%;
+    max-width: 250px;
+    background-color: #000;
+    border-radius: 8px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+#controls, #admin-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#participant-list {
+    list-style-type: none;
+    padding: 0;
+    text-align: left;
+}
+
+#participant-list li {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
