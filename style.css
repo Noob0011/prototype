@@ -1,84 +1,79 @@
 body {
+    background-color: #121212;
+    color: #e0e0e0;
     font-family: Arial, sans-serif;
     display: flex;
-    justify-content: center;
     align-items: center;
-    background-color: #f9f9f9;
-    color: #333;
-    margin: 0;
-    padding: 0;
+    justify-content: center;
     height: 100vh;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 0;
 }
 
 body.dark-mode {
-    background-color: #121212;
-    color: #e0e0e0;
+    background-color: #f0f0f0;
+    color: #1a1a1a;
 }
 
 #app {
-    width: 100%;
-    max-width: 500px;
     text-align: center;
-    padding: 10px;
+    max-width: 600px;
+    width: 100%;
+    padding: 20px;
     border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #333;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.4s ease;
 }
 
-h1 {
-    font-size: 1.6rem;
-    margin-bottom: 20px;
+header h1 {
+    margin: 0 0 10px;
 }
 
 button, input {
     padding: 10px;
     font-size: 1rem;
-    border-radius: 4px;
     margin: 5px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+button {
+    background-color: #4a4a4a;
+    color: #f0f0f0;
+    transition: background 0.3s;
+}
+
+button:hover {
+    background-color: #1a1a1a;
 }
 
 #dark-mode-toggle {
-    margin-bottom: 20px;
+    background-color: #292929;
+    color: #e0e0e0;
 }
 
 #video-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 15px;
 }
 
 video {
-    width: 100%;
-    max-width: 250px;
-    background-color: #000;
-    border-radius: 8px;
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-#controls, #admin-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-}
-
-#participant-list {
-    list-style-type: none;
-    padding: 0;
-    text-align: left;
-}
-
-#participant-list li {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 5px;
-    display: flex;
-    justify-content: space-between;
+    max-width: 45%;
+    border-radius: 6px;
+    background: #000;
+    animation: zoomIn 0.5s ease;
 }
 
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.8); }
+    to { transform: scale(1); }
 }
