@@ -3,41 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anonymous Video Call Room</title>
+    <title>Anonymous Video Chat</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
         <header>
-            <h1>Video Chat Room</h1>
+            <h1>Anonymous Video Chat</h1>
             <button id="dark-mode-toggle">Dark Mode</button>
         </header>
-        
-        <!-- Room Info and Peer ID Display -->
-        <section id="room-info">
-            <p>Your Peer ID: <span id="peer-id">Loading...</span> <button id="copy-id">Copy</button></p>
+
+        <!-- Peer ID and Room Controls -->
+        <section id="controls">
+            <p>Your Peer ID: <span id="peer-id">Loading...</span></p>
             <button id="create-room">Create Room</button>
+            <button id="join-room">Join Room</button>
         </section>
 
-        <!-- Video Streams Area -->
+        <!-- Video Container -->
         <div id="video-container">
             <video id="my-video" autoplay muted></video>
-            <div id="peers-container"></div>
+            <div id="participants"></div>
         </div>
 
-        <!-- Chat Area (still in development) -->
+        <!-- Chat Box -->
         <section id="chat-section">
             <div id="chat-box"></div>
             <input type="text" id="chat-input" placeholder="Type a message...">
             <button id="send-message">Send</button>
         </section>
 
-        <!-- Admin Controls for Room Owner -->
-        <div id="admin-controls">
-            <h3>Admin Controls</h3>
-            <ul id="participant-list"></ul>
+        <!-- Admin Controls -->
+        <section id="admin-controls">
+            <h2>Admin Controls</h2>
+            <ul id="participants-list"></ul>
             <button id="end-call">End Call</button>
-        </div>
+        </section>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/peerjs@1.3.2/dist/peerjs.min.js"></script>
