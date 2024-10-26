@@ -6,10 +6,12 @@ const participantsList = document.getElementById('participants-list');
 let connections = {};
 let isAdmin = false;
 
+// Get peer ID
 peer.on('open', id => {
     document.getElementById('peer-id').textContent = id;
 });
 
+// Toggle Dark Mode
 document.getElementById('dark-mode-toggle').onclick = () => {
     document.body.classList.toggle('dark-mode');
 };
@@ -69,6 +71,7 @@ function removeVideoStream(peerId) {
 function addAdminControls(peerId) {
     const listItem = document.createElement('li');
     listItem.textContent = `Participant ${peerId}`;
+
     const muteButton = document.createElement('button');
     muteButton.textContent = 'Mute';
     muteButton.onclick = () => toggleMute(peerId, muteButton);
