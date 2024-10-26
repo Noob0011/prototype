@@ -22,7 +22,6 @@ darkModeToggle.onclick = () => {
 // Display Peer ID when available
 peer.on('open', (id) => {
     peerIdElement.textContent = id;
-    console.log('Your Peer ID:', id);
 });
 
 // Copy Peer ID to clipboard
@@ -31,7 +30,7 @@ copyIdButton.onclick = () => {
         .then(() => alert('Peer ID copied!'));
 };
 
-// Initialize Media and Stream for Room
+// Initialize Media Stream
 async function initializeStream() {
     try {
         myStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -42,14 +41,14 @@ async function initializeStream() {
     }
 }
 
-// Start Video Stream as Room Admin
+// Start as Room Admin
 createRoomButton.onclick = async () => {
     isAdmin = true;
     adminControls.style.display = 'block';
     await initializeStream();
 };
 
-// Join a Room as Guest
+// Join as Guest
 joinRoomButton.onclick = async () => {
     const roomId = document.getElementById('room-id-input').value.trim();
     if (!roomId) {
@@ -61,7 +60,7 @@ joinRoomButton.onclick = async () => {
     handleIncomingCall(call);
 };
 
-// Handle Incoming Calls and Streams
+// Handle Incoming Calls
 peer.on('call', (call) => {
     call.answer(myStream);
     handleIncomingCall(call);
@@ -72,7 +71,7 @@ function handleIncomingCall(call) {
     call.on('close', () => removeParticipant(call.peer));
 }
 
-// Add Participant Stream to UI
+// Add Participant Stream
 function addParticipantStream(stream, peerId) {
     if (connections[peerId]) return;
 
@@ -86,7 +85,7 @@ function addParticipantStream(stream, peerId) {
     if (isAdmin) addAdminControls(peerId);
 }
 
-// Admin Controls for Mute, Kick, and Manage Participants
+// Admin Controls
 function addAdminControls(peerId) {
     const participantItem = document.createElement('li');
     participantItem.textContent = `Participant: ${peerId}`;
@@ -110,21 +109,28 @@ function toggleMute(peerId, button) {
         const audioTracks = participant.stream.getAudioTracks();
         audioTracks.forEach(track => track.enabled = !track.enabled);
         button.textContent = track.enabled ? 'Mute' : 'Unmute';
+        participantItem.classList.toggle('muted', !track.enabled); // Visual indicator for mute
     }
 }
 
+// Kick Participant
 function kickParticipant(peerId, participantItem) {
     if (connections[peerId]) {
         connections[peerId].video.remove();
+        connections[peerId].stream.getTracks().forEach(track => track.stop()); // Stop their stream
         participantItem.remove();
         delete connections[peerId];
+        alert(`Participant ${peerId} has been kicked`);
     }
 }
 
 // End Call for All (Admin Only)
 endCallButton.onclick = () => {
     if (isAdmin) {
-        Object.values(connections).forEach(connection => connection.video.remove());
+        Object.values(connections).forEach(connection => {
+            connection.video.remove();
+            connection.stream.getTracks().forEach(track => track.stop());
+        });
         connections = {};
         alert('Call ended');
     }
