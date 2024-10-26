@@ -1,80 +1,67 @@
 const peer = new Peer();
 let myStream;
-const myVideo = document.getElementById('my-video');
-const peerIdElement = document.getElementById('peer-id');
-const copyIdButton = document.getElementById('copy-id');
-const createRoomButton = document.getElementById('create-room');
-const joinRoomButton = document.getElementById('join-room');
-const endCallButton = document.getElementById('end-call');
-const darkModeToggle = document.getElementById('dark-mode-toggle');
+const videoContainer = document.getElementById('video-container');
 const peersContainer = document.getElementById('peers-container');
 const adminControls = document.getElementById('admin-controls');
 const participantList = document.getElementById('participant-list');
-
+const chatBox = document.getElementById('chat-box');
+const chatInput = document.getElementById('chat-input');
+const sendMessageButton = document.getElementById('send-message');
 let connections = {};
 let isAdmin = false;
 
-// Toggle Dark Mode
-darkModeToggle.onclick = () => {
-    document.body.classList.toggle('dark-mode');
-};
-
-// Display Peer ID when available
 peer.on('open', (id) => {
-    peerIdElement.textContent = id;
+    document.getElementById('peer-id').textContent = id;
 });
 
-// Copy Peer ID to clipboard
-copyIdButton.onclick = () => {
-    navigator.clipboard.writeText(peerIdElement.textContent)
-        .then(() => alert('Peer ID copied!'));
+// Copy Peer ID
+document.getElementById('copy-id').onclick = () => {
+    navigator.clipboard.writeText(peer.id);
+    alert("Peer ID copied to clipboard.");
+};
+
+// Dark Mode Toggle
+document.getElementById('dark-mode-toggle').onclick = () => {
+    document.body.classList.toggle('dark-mode');
 };
 
 // Initialize Media Stream
 async function initializeStream() {
-    try {
-        myStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        myVideo.srcObject = myStream;
-    } catch (error) {
-        console.error('Media error:', error);
-        alert('Check camera/microphone permissions');
-    }
+    myStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    document.getElementById('my-video').srcObject = myStream;
 }
 
-// Start as Room Admin
-createRoomButton.onclick = async () => {
+// Create Room
+document.getElementById('create-room').onclick = async () => {
+    await initializeStream();
     isAdmin = true;
     adminControls.style.display = 'block';
-    await initializeStream();
 };
 
-// Join as Guest
-joinRoomButton.onclick = async () => {
-    const roomId = document.getElementById('room-id-input').value.trim();
-    if (!roomId) {
-        alert('Please enter a Room ID');
-        return;
+// Join Room
+document.getElementById('join-room').onclick = async () => {
+    const roomId = prompt("Enter Room ID:");
+    if (roomId) {
+        await initializeStream();
+        const call = peer.call(roomId, myStream);
+        setupCall(call);
     }
-    await initializeStream();
-    const call = peer.call(roomId, myStream);
-    handleIncomingCall(call);
 };
 
 // Handle Incoming Calls
 peer.on('call', (call) => {
     call.answer(myStream);
-    handleIncomingCall(call);
+    setupCall(call);
 });
 
-function handleIncomingCall(call) {
-    call.on('stream', (stream) => addParticipantStream(stream, call.peer));
-    call.on('close', () => removeParticipant(call.peer));
+// Add Participant
+function setupCall(call) {
+    call.on('stream', (stream) => addVideoStream(stream, call.peer));
+    call.on('close', () => removeVideoStream(call.peer));
 }
 
-// Add Participant Stream
-function addParticipantStream(stream, peerId) {
-    if (connections[peerId]) return;
-
+// Add Video Stream
+function addVideoStream(stream, peerId) {
     const video = document.createElement('video');
     video.srcObject = stream;
     video.autoplay = true;
@@ -85,53 +72,46 @@ function addParticipantStream(stream, peerId) {
     if (isAdmin) addAdminControls(peerId);
 }
 
-// Admin Controls
+// Add Admin Controls
 function addAdminControls(peerId) {
     const participantItem = document.createElement('li');
-    participantItem.textContent = `Participant: ${peerId}`;
-
+    participantItem.textContent = `Participant ${peerId}`;
+    
     const muteButton = document.createElement('button');
-    muteButton.textContent = 'Mute';
+    muteButton.textContent = "Mute";
     muteButton.onclick = () => toggleMute(peerId, muteButton);
 
     const kickButton = document.createElement('button');
-    kickButton.textContent = 'Kick';
-    kickButton.onclick = () => kickParticipant(peerId, participantItem);
+    kickButton.textContent = "Kick";
+    kickButton.onclick = () => kickParticipant(peerId);
 
-    participantItem.appendChild(muteButton);
-    participantItem.appendChild(kickButton);
+    participantItem.append(muteButton, kickButton);
     participantList.appendChild(participantItem);
 }
 
-function toggleMute(peerId, button) {
-    const participant = connections[peerId];
-    if (participant && participant.stream) {
-        const audioTracks = participant.stream.getAudioTracks();
-        audioTracks.forEach(track => track.enabled = !track.enabled);
-        button.textContent = track.enabled ? 'Mute' : 'Unmute';
-        participantItem.classList.toggle('muted', !track.enabled); // Visual indicator for mute
-    }
+// Mute Participant
+function toggleMute(peerId, muteButton) {
+    const stream = connections[peerId].stream;
+    stream.getAudioTracks()[0].enabled = !stream.getAudioTracks()[0].enabled;
+    muteButton.textContent = stream.getAudioTracks()[0].enabled ? "Mute" : "Unmute";
 }
 
 // Kick Participant
-function kickParticipant(peerId, participantItem) {
+function kickParticipant(peerId) {
     if (connections[peerId]) {
         connections[peerId].video.remove();
-        connections[peerId].stream.getTracks().forEach(track => track.stop()); // Stop their stream
-        participantItem.remove();
+        connections[peerId].stream.getTracks().forEach(track => track.stop());
         delete connections[peerId];
-        alert(`Participant ${peerId} has been kicked`);
+        alert(`Kicked Participant: ${peerId}`);
     }
 }
 
-// End Call for All (Admin Only)
-endCallButton.onclick = () => {
-    if (isAdmin) {
-        Object.values(connections).forEach(connection => {
-            connection.video.remove();
-            connection.stream.getTracks().forEach(track => track.stop());
-        });
-        connections = {};
-        alert('Call ended');
-    }
+// End Call
+document.getElementById('end-call').onclick = () => {
+    Object.values(connections).forEach(connection => {
+        connection.video.remove();
+        connection.stream.getTracks().forEach(track => track.stop());
+    });
+    connections = {};
+    alert("Call Ended");
 };
