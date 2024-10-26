@@ -3,35 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Video Call Room</title>
+    <title>Anonymous Video Call Room</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app">
-        <h1>Video Call Room</h1>
-        <div id="peer-info">
-            <p>Your Room ID: <span id="peer-id">Loading...</span> <button id="copy-id">Copy</button></p>
+        <header>
+            <h1>Video Chat Room</h1>
+            <button id="dark-mode-toggle">Dark Mode</button>
+        </header>
+        
+        <!-- Room Info and Peer ID Display -->
+        <section id="room-info">
+            <p>Your Peer ID: <span id="peer-id">Loading...</span> <button id="copy-id">Copy</button></p>
             <button id="create-room">Create Room</button>
-        </div>
+        </section>
 
-        <button id="dark-mode-toggle">Toggle Dark Mode</button>
-
-        <!-- Video Container and Participant List -->
+        <!-- Video Streams Area -->
         <div id="video-container">
             <video id="my-video" autoplay muted></video>
             <div id="peers-container"></div>
         </div>
 
-        <!-- Admin Controls and Participant List -->
-        <div id="admin-controls" style="display:none;">
-            <h2>Admin Controls</h2>
-            <ul id="participant-list"></ul>
-            <button id="end-call" class="admin-only">End Call</button>
-        </div>
+        <!-- Chat Area (still in development) -->
+        <section id="chat-section">
+            <div id="chat-box"></div>
+            <input type="text" id="chat-input" placeholder="Type a message...">
+            <button id="send-message">Send</button>
+        </section>
 
-        <div id="controls">
-            <input type="text" id="room-id-input" placeholder="Enter Room ID" />
-            <button id="join-room">Join Room</button>
+        <!-- Admin Controls for Room Owner -->
+        <div id="admin-controls">
+            <h3>Admin Controls</h3>
+            <ul id="participant-list"></ul>
+            <button id="end-call">End Call</button>
         </div>
     </div>
 
