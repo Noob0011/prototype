@@ -10,31 +10,27 @@
     <div id="app">
         <header>
             <h1>Anonymous Video Chat</h1>
-            <button id="dark-mode-toggle">Dark Mode</button>
+            <button id="dark-mode-toggle">Toggle Dark Mode</button>
         </header>
 
-        <!-- Peer ID and Room Controls -->
         <section id="controls">
             <p>Your Peer ID: <span id="peer-id">Loading...</span></p>
             <button id="create-room">Create Room</button>
             <button id="join-room">Join Room</button>
         </section>
 
-        <!-- Video Container -->
         <div id="video-container">
             <video id="my-video" autoplay muted></video>
             <div id="participants"></div>
         </div>
 
-        <!-- Chat Box -->
         <section id="chat-section">
             <div id="chat-box"></div>
             <input type="text" id="chat-input" placeholder="Type a message...">
             <button id="send-message">Send</button>
         </section>
 
-        <!-- Admin Controls -->
-        <section id="admin-controls">
+        <section id="admin-controls" style="display:none;">
             <h2>Admin Controls</h2>
             <ul id="participants-list"></ul>
             <button id="end-call">End Call</button>
@@ -45,3 +41,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
